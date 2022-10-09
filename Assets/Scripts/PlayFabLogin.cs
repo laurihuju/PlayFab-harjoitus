@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using PlayFab;
 using PlayFab.ClientModels;
 using TMPro;
@@ -30,6 +31,8 @@ public class PlayFabLogin : MonoBehaviour
     private void OnLoginSuccess(LoginResult result)
     {
         Debug.Log("Login success");
+
+        SceneManager.LoadScene(1);
     }
 
     private void OnLoginFailure(PlayFabError error)
