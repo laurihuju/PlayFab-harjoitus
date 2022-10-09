@@ -1,26 +1,42 @@
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
+using TMPro;
 
 public class PlayFabLogin : MonoBehaviour
 {
-    private void Start()
+    [SerializeField] private TMP_InputField emailField;
+    [SerializeField] private TMP_InputField passwordField;
+
+    [SerializeField] private TextMeshProUGUI errorText;
+
+    public void LogIn()
     {
-        LoginWithCustomIDRequest loginRequest = new LoginWithCustomIDRequest
+        if(string.IsNullOrWhiteSpace(emailField.text) || string.IsNullOrWhiteSpace(passwordField.text))
         {
-            CustomId = "GettingStartedGuide",
-            CreateAccount = true
+            errorText.text = "Email or password can't be empty!";
+            errorText.gameObject.SetActive(true);
+            return;
+        }
+
+        LoginWithEmailAddressRequest loginRequest = new LoginWithEmailAddressRequest
+        {
+            Email = emailField.text,
+            Password = passwordField.text
         };
-        PlayFabClientAPI.LoginWithCustomID(loginRequest, OnLoginSuccess, OnLoginFailure);
+        PlayFabClientAPI.LoginWithEmailAddress(loginRequest, OnLoginSuccess, OnLoginFailure);
     }
 
     private void OnLoginSuccess(LoginResult result)
     {
-        Debug.Log("Onnittelut, teit ensimmäisen onnistuneen API-kutsusi!");
+        Debug.Log("Login success");
     }
 
     private void OnLoginFailure(PlayFabError error)
     {
+        errorText.text = error.ErrorMessage;
+        errorText.gameObject.SetActive(true);
+
         Debug.LogError(error.GenerateErrorReport());
     }
 }
